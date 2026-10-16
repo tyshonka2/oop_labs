@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Лабораторна робота №1</title>
+  <link rel="stylesheet" href="./src/style/style.css">
+  <script type="module" src="./src/lab1.js"></script>
+</head>
+<body>
+    <nav class="main-menu" aria-label="Головне меню програми">
+      <button type="button" id="work1" class="menu-button">Робота1</button>
+      <button type="button" id="work2" class="menu-button">Робота2</button>
+    </nav>
+
+    <section class="result-card" aria-labelledby="result-title">
+      <div class="result-heading">
+        <h2 id="result-title">Результат виконання</h2>
+        <span id="result-source" class="result-badge">Очікування</span>
+      </div>
+      <p id="result" class="result-value" aria-live="polite"></p>
+    </section>
+    
+</body>
+</html>
