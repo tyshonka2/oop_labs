@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab2</title>
+    <link rel="stylesheet" href="./src/style/style.css">
+    <script type="module" src="./src/lab2.js"></script>
+</head>
+<body>
+    <main class="application">
+        <nav class="menu-bar" aria-label="Головне меню">
+            <div class="menu-group">
+                <button class="menu-trigger" id="file-menu-button" type="button" aria-expanded="false" aria-controls="file-menu">Файл</button>
+                <div class="dropdown" id="file-menu" hidden>
+                    <button type="button" id="clear-canvas">Очистити поле</button>
+                    <button type="button" id="save-canvas">Зберегти PNG</button>
+                </div>
+            </div>
+            <div class="menu-group">
+                <button class="menu-trigger" id="objects-menu-button" type="button" aria-expanded="false" aria-controls="objects-menu">Об’єкти</button>
+                <div class="dropdown" id="objects-menu" hidden>
+                    <button type="button" class="shape-option" data-shape="point"><span>Крапка</span><span class="check" aria-hidden="true"></span></button>
+                    <button type="button" class="shape-option" data-shape="line"><span>Лінія</span><span class="check" aria-hidden="true"></span></button>
+                    <button type="button" class="shape-option" data-shape="rectangle"><span>Прямокутник</span><span class="check" aria-hidden="true"></span></button>
+                    <button type="button" class="shape-option" data-shape="ellipse"><span>Еліпс</span><span class="check" aria-hidden="true"></span></button>
+                </div>
+            </div>
+            <div class="menu-group">
+                <button class="menu-trigger" id="help-menu-button" type="button" aria-expanded="false" aria-controls="help-menu">Довідка</button>
+                <div class="dropdown" id="help-menu" hidden>
+                    <button type="button" id="show-help">Як малювати?</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="canvas-panel" aria-label="Поле малювання">
+            <canvas id="drawing-canvas" aria-label="Поле для малювання геометричних фігур"></canvas>
+        </section>
+        <span id="shape-count" class="visually-hidden" aria-live="polite">0</span>
+    </main>
+
+    <dialog id="help-dialog" class="help-dialog">
+        <h2>Як користуватися редактором</h2>
+        <p>Вибери фігуру в меню «Об’єкти». Позначка ✓ у меню показує активний тип.</p>
+        <p><b>Крапка:</b> один клік. <b>Лінія та прямокутник:</b> натисни й перетягни мишу. <b>Еліпс:</b> натисни у центрі й перетягни до кута охоплюючого прямокутника.</p>
+        <p>Під час руху миші видно суцільний чорний «гумовий» слід. Щоб прибрати всі фігури, вибери «Файл → Очистити поле».</p>
+        <form method="dialog"><button type="submit">Зрозуміло</button></form>
+    </dialog>
+</body>
+</html>
