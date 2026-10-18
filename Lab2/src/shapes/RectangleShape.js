@@ -6,6 +6,8 @@ export class RectangleShape extends Shape {
         const top = Math.min(this.y1, this.y2);
         const width = Math.abs(this.x2 - this.x1);
         const height = Math.abs(this.y2 - this.y1);
+        ctx.fillStyle = "#ff8400";
+        ctx.fillRect(left, top, width, height);
         ctx.strokeStyle = "#111111";
         ctx.lineWidth = 2;
         ctx.strokeRect(left, top, width, height);
