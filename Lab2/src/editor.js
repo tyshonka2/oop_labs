@@ -1,56 +1,70 @@
-
 import { PointShape } from "./shapes/PointShape.js";
 import { LineShape } from "./shapes/LineShape.js";
 import { RectangleShape } from "./shapes/RectangleShape.js";
 import { EllipseShape } from "./shapes/EllipseShape.js";
 
+const SHAPE_CLASSES = {
+    point: PointShape,
+    line: LineShape,
+    rectangle: RectangleShape,
+    ellipse: EllipseShape
+};
+
+const MAX_SHAPES = 128;
+
 export class GraphicEditor {
-    constructor() {
-        this.canvas = document.getElementById("drawing-canvas");
-        this.ctx = this.canvas.getContext("2d");
+    #canvas;
+    #ctx;
+    #objects = new Array(MAX_SHAPES).fill(null);
+    #count = 0;
+    #type = "point";
+    #current = null;
 
-        
-        this.onChange = (count) => {
-            const counter = document.getElementById("shape-count");
-            if (counter) counter.textContent = count;
-        };
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#ctx = canvas.getContext("2d");
 
-        this.objects = Array(128).fill(null);
-        this.count = 0;
-        this.selectedType = "point";
-        this.startPoint = null;
-        this.endPoint = null;
+        this.#resizeCanvas();
+        window.addEventListener("resize", () => this.#resizeCanvas());
 
-        this.resizeCanvas();
-
-        window.addEventListener("resize", () => this.resizeCanvas());
-
-        this.canvas.addEventListener("pointerdown", (event) => this.startDrawing(event));
-        this.canvas.addEventListener("pointermove", (event) => this.moveDrawing(event));
-        this.canvas.addEventListener("pointerup", (event) => this.finishDrawing(event));
-        this.canvas.addEventListener("pointercancel", () => this.cancelDrawing());
-
-        this.render();
+        canvas.addEventListener("pointerdown", (event) => this.#onMouseDown(event));
+        canvas.addEventListener("pointermove", (event) => this.#onMouseMove(event));
+        canvas.addEventListener("pointerup", (event) => this.#onMouseUp(event));
+        canvas.addEventListener("pointercancel", () => this.#cancel());
     }
 
-    resizeCanvas() {
-        const rect = this.canvas.getBoundingClientRect();
-        const ratio = window.devicePixelRatio || 1;
-
-        this.canvas.width = Math.max(1, Math.round(rect.width * ratio));
-        this.canvas.height = Math.max(1, Math.round(rect.height * ratio));
-
-        this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-        this.render();
+    get type() {
+        return this.#type;
     }
 
     setType(type) {
-        this.selectedType = type;
-        this.cancelDrawing();
+        this.#type = type;
+        this.#cancel();
     }
 
-    position(event) {
-        const rect = this.canvas.getBoundingClientRect();
+    clear() {
+        this.#objects.fill(null);
+        this.#count = 0;
+        this.#cancel();
+    }
+
+    toPNG() {
+        return this.#canvas.toDataURL("image/png");
+    }
+
+    #resizeCanvas() {
+        const rect = this.#canvas.getBoundingClientRect();
+        const ratio = window.devicePixelRatio || 1;
+
+        this.#canvas.width = Math.max(1, Math.round(rect.width * ratio));
+        this.#canvas.height = Math.max(1, Math.round(rect.height * ratio));
+        this.#ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+        this.#render();
+    }
+
+    #position(event) {
+        const rect = this.#canvas.getBoundingClientRect();
 
         return {
             x: event.clientX - rect.left,
@@ -58,119 +72,72 @@ export class GraphicEditor {
         };
     }
 
-    createShape(type, a, b) {
-        if (type === "point") return new PointShape(a.x, a.y, a.x, a.y);
-        if (type === "line") return new LineShape(a.x, a.y, b.x, b.y);
-        if (type === "rectangle") return new RectangleShape(a.x, a.y, b.x, b.y);
-
-        return new EllipseShape(a.x, a.y, b.x, b.y);
+    #createShape(point) {
+        const ShapeClass = SHAPE_CLASSES[this.#type];
+        return new ShapeClass(point.x, point.y, point.x, point.y);
     }
 
-    addShape(shape) {
-        if (this.count >= this.objects.length) return;
+    #addShape(shape) {
+        if (this.#count >= MAX_SHAPES) return;
 
-        this.objects[this.count] = shape;
-        this.count++;
-
-        this.onChange(this.count);
-        this.render();
+        this.#objects[this.#count] = shape;
+        this.#count++;
     }
 
-    startDrawing(event) {
-        if (event.button !== 0 || this.count >= this.objects.length) return;
+    #onMouseDown(event) {
+        if (event.button !== 0 || this.#count >= MAX_SHAPES) return;
 
-        const point = this.position(event);
+        const point = this.#position(event);
 
-        if (this.selectedType === "point") {
-            this.addShape(this.createShape("point", point, point));
+        if (this.#type === "point") {
+            this.#addShape(this.#createShape(point));
+            this.#render();
             return;
         }
 
-        this.startPoint = point;
-        this.endPoint = point;
-
-        this.canvas.setPointerCapture(event.pointerId);
+        this.#current = this.#createShape(point);
+        this.#canvas.setPointerCapture(event.pointerId);
     }
 
-    moveDrawing(event) {
-        if (!this.startPoint) return;
+    #onMouseMove(event) {
+        if (!this.#current) return;
 
-        this.endPoint = this.position(event);
-        this.render();
+        const point = this.#position(event);
+        this.#current.setEnd(point.x, point.y);
+        this.#render();
     }
 
-    finishDrawing(event) {
-        if (!this.startPoint) return;
+    #onMouseUp(event) {
+        if (!this.#current) return;
 
-        this.endPoint = this.position(event);
+        const point = this.#position(event);
+        this.#current.setEnd(point.x, point.y);
 
-        const shape = this.createShape(
-            this.selectedType,
-            this.startPoint,
-            this.endPoint
-        );
-
-        this.startPoint = null;
-        this.endPoint = null;
-
-        this.addShape(shape);
-    }
-
-    cancelDrawing() {
-        this.startPoint = null;
-        this.endPoint = null;
-        this.render();
-    }
-
-    clear() {
-        this.objects.fill(null);
-        this.count = 0;
-
-        this.cancelDrawing();
-        this.onChange(0);
-    }
-
-    render() {
-        const width = this.canvas.clientWidth;
-        const height = this.canvas.clientHeight;
-
-        this.ctx.clearRect(0, 0, width, height);
-        this.ctx.fillStyle = "#ffffff";
-        this.ctx.fillRect(0, 0, width, height);
-
-        for (let i = 0; i < this.count; i++) {
-            this.objects[i].draw(this.ctx);
+        if (!this.#current.isEmpty()) {
+            this.#addShape(this.#current);
         }
 
-        if (this.startPoint && this.endPoint) {
-            this.ctx.save();
-            this.ctx.lineWidth = 1;
-            this.ctx.strokeStyle = "#000000";
-            this.ctx.setLineDash([]);
-            this.ctx.beginPath();
+        this.#current = null;
+        this.#render();
+    }
 
-            if (this.selectedType === "line") {
-                this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
-                this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-            } else if (this.selectedType === "rectangle") {
-                this.ctx.rect(
-                    Math.min(this.startPoint.x, this.endPoint.x),
-                    Math.min(this.startPoint.y, this.endPoint.y),
-                    Math.abs(this.endPoint.x - this.startPoint.x),
-                    Math.abs(this.endPoint.y - this.startPoint.y)
-                );
-            } else {
-                this.ctx.ellipse(
-                    this.startPoint.x,
-                    this.startPoint.y,
-                    Math.abs(this.endPoint.x - this.startPoint.x),
-                    Math.abs(this.endPoint.y - this.startPoint.y),
-                    0, 0, Math.PI * 2
-                );
-            }
+    #cancel() {
+        this.#current = null;
+        this.#render();
+    }
 
-            this.ctx.stroke();
-            this.ctx.restore();
+    #render() {
+        const ctx = this.#ctx;
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, this.#canvas.clientWidth, this.#canvas.clientHeight);
+
+        for (let i = 0; i < this.#count; i++) {
+            this.#objects[i].show(ctx);
+        }
+
+        if (this.#current) {
+            this.#current.showTrail(ctx);
         }
     }
 }

@@ -1,15 +1,22 @@
 import { Shape } from "./Shape.js";
 
 export class RectangleShape extends Shape {
-    draw(ctx) {
-        const left = Math.min(this.x1, this.x2);
-        const top = Math.min(this.y1, this.y2);
-        const width = Math.abs(this.x2 - this.x1);
-        const height = Math.abs(this.y2 - this.y1);
-        ctx.fillStyle = "#ff8400";
-        ctx.fillRect(left, top, width, height);
-        ctx.strokeStyle = "#111111";
+    path(ctx) {
+        ctx.rect(
+            Math.min(this.x1, this.x2),
+            Math.min(this.y1, this.y2),
+            Math.abs(this.x2 - this.x1),
+            Math.abs(this.y2 - this.y1)
+        );
+    }
+
+    show(ctx) {
+        ctx.save();
+        ctx.beginPath();
+        this.path(ctx);
+        ctx.strokeStyle = "#000000";
         ctx.lineWidth = 2;
-        ctx.strokeRect(left, top, width, height);
+        ctx.stroke();
+        ctx.restore();
     }
 }

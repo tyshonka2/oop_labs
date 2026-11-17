@@ -1,4 +1,3 @@
-
 export function setupMenu(editor) {
     const menuButtons = document.querySelectorAll(".menu-trigger");
 
@@ -25,7 +24,7 @@ export function setupMenu(editor) {
 
     function updateSelection() {
         options.forEach((option) => {
-            const selected = option.dataset.shape === editor.selectedType;
+            const selected = option.dataset.shape === editor.type;
             option.querySelector(".check").textContent = selected ? "✓" : "";
             option.setAttribute("aria-pressed", String(selected));
         });
@@ -48,7 +47,7 @@ export function setupMenu(editor) {
 
     document.getElementById("save-canvas").addEventListener("click", () => {
         const link = document.createElement("a");
-        link.href = editor.canvas.toDataURL("image/png");
+        link.href = editor.toPNG();
         link.download = "Lab2-malunok.png";
         link.click();
         closeMenus();
