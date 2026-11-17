@@ -1,5 +1,9 @@
-import { work1 } from "./modules/module1.js";
-import { work2 } from "./modules/module2.js";
+import { showTextDialog } from "./modules/module1.js";
+import { showNumberDialog } from "./modules/module2.js";
 
-work1();
-work2();
+function initMenu() {
+    document.getElementById("work1").addEventListener("click", showTextDialog);
+    document.getElementById("work2").addEventListener("click", showNumberDialog);
+}
+
+initMenu();
