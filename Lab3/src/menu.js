@@ -1,70 +1,73 @@
-export function setupMenu(editor) {
-    const menuButtons = document.querySelectorAll(".menu-trigger");
+export class Menu {
+    #window;
+    #triggers;
 
-    function closeMenus() {
-        menuButtons.forEach((button) => {
+    constructor(mainWindow) {
+        this.#window = mainWindow;
+        this.#triggers = document.querySelectorAll(".menu-trigger");
+
+        this.#triggers.forEach((button) => {
+            button.addEventListener("click", () => this.#onTriggerClick(button));
+        });
+
+        document.querySelectorAll(".shape-option").forEach((item) => {
+            item.addEventListener("click", () => this.#onShapeClick(item));
+        });
+
+        document.getElementById("clear-canvas").addEventListener("click", () => this.#onClearClick());
+        document.getElementById("save-canvas").addEventListener("click", () => this.#onSaveClick());
+        document.getElementById("show-help").addEventListener("click", () => this.#onHelpClick());
+
+        document.addEventListener("pointerdown", (event) => this.#onDocumentPointerDown(event));
+        document.addEventListener("keydown", (event) => this.#onKeyDown(event));
+    }
+
+    close() {
+        this.#triggers.forEach((button) => {
             button.setAttribute("aria-expanded", "false");
             document.getElementById(button.getAttribute("aria-controls")).hidden = true;
         });
     }
 
-    menuButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const isOpen = button.getAttribute("aria-expanded") === "true";
-            closeMenus();
+    #onTriggerClick(button) {
+        const isOpen = button.getAttribute("aria-expanded") === "true";
+        this.close();
 
-            if (!isOpen) {
-                button.setAttribute("aria-expanded", "true");
-                document.getElementById(button.getAttribute("aria-controls")).hidden = false;
-            }
-        });
-    });
-
-    const options = document.querySelectorAll(".shape-option");
-
-    function updateSelection() {
-        options.forEach((option) => {
-            const selected = option.dataset.shape === editor.type;
-            option.querySelector(".check").textContent = selected ? "✓" : "";
-            option.setAttribute("aria-pressed", String(selected));
-        });
+        if (!isOpen) {
+            button.setAttribute("aria-expanded", "true");
+            document.getElementById(button.getAttribute("aria-controls")).hidden = false;
+        }
     }
 
-    options.forEach((option) => {
-        option.addEventListener("click", () => {
-            editor.setType(option.dataset.shape);
-            updateSelection();
-            closeMenus();
-        });
-    });
+    #onShapeClick(item) {
+        this.#window.setType(item.dataset.shape);
+        this.close();
+    }
 
-    updateSelection();
+    #onClearClick() {
+        this.#window.clear();
+        this.close();
+    }
 
-    document.getElementById("clear-canvas").addEventListener("click", () => {
-        editor.clear();
-        closeMenus();
-    });
+    #onSaveClick() {
+        this.#window.savePNG();
+        this.close();
+    }
 
-    document.getElementById("save-canvas").addEventListener("click", () => {
-        const link = document.createElement("a");
-        link.href = editor.toPNG();
-        link.download = "Lab3-malunok.png";
-        link.click();
-        closeMenus();
-    });
+    #onHelpClick() {
+        this.close();
+        this.#window.showHelp();
+    }
 
-    const helpDialog = document.getElementById("help-dialog");
+    #onDocumentPointerDown(event) {
+        if (!event.target.closest(".menu-group")) {
+            this.close();
+        }
+    }
 
-    document.getElementById("show-help").addEventListener("click", () => {
-        closeMenus();
-        helpDialog.showModal();
-    });
-
-    document.addEventListener("pointerdown", (event) => {
-        if (!event.target.closest(".menu-group")) closeMenus();
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeMenus();
-    });
+    #onKeyDown(event) {
+        if (event.key === "Escape") {
+            this.close();
+        }
+    }
 }
