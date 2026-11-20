@@ -29,7 +29,7 @@ export class Shape {
 
     showTrail(ctx) {
         ctx.save();
-        ctx.strokeStyle = "#000000";
+        ctx.strokeStyle = "#ff0000";
         ctx.lineWidth = 1;
         ctx.beginPath();
         this.path(ctx);

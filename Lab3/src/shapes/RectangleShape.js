@@ -2,11 +2,14 @@ import { Shape } from "./Shape.js";
 
 export class RectangleShape extends Shape {
     path(ctx) {
+        const halfWidth = Math.abs(this.x2 - this.x1);
+        const halfHeight = Math.abs(this.y2 - this.y1);
+
         ctx.rect(
-            Math.min(this.x1, this.x2),
-            Math.min(this.y1, this.y2),
-            Math.abs(this.x2 - this.x1),
-            Math.abs(this.y2 - this.y1)
+            this.x1 - halfWidth,
+            this.y1 - halfHeight,
+            halfWidth * 2,
+            halfHeight * 2
         );
     }
 

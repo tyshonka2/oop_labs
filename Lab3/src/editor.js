@@ -10,7 +10,7 @@ const SHAPE_CLASSES = {
     ellipse: EllipseShape
 };
 
-const MAX_SHAPES = 128;
+const MAX_SHAPES = 129;
 
 export class GraphicEditor {
     #canvas;
@@ -31,10 +31,6 @@ export class GraphicEditor {
         canvas.addEventListener("pointermove", (event) => this.#onMouseMove(event));
         canvas.addEventListener("pointerup", (event) => this.#onMouseUp(event));
         canvas.addEventListener("pointercancel", () => this.#cancel());
-    }
-
-    get type() {
-        return this.#type;
     }
 
     setType(type) {

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторна робота №2</title>
+    <title>Лабораторна робота №3</title>
     <link rel="stylesheet" href="./src/style/style.css">
-    <script type="module" src="./src/lab2.js"></script>
+    <script type="module" src="./src/lab3.js"></script>
 </head>
 <body>
     <main class="application">
@@ -20,10 +20,10 @@
             <div class="menu-group">
                 <button class="menu-trigger" id="objects-menu-button" type="button" aria-expanded="false" aria-controls="objects-menu">Об’єкти</button>
                 <div class="dropdown" id="objects-menu" hidden>
-                    <button type="button" class="shape-option" data-shape="point"><span>Крапка</span><span class="check" aria-hidden="true"></span></button>
-                    <button type="button" class="shape-option" data-shape="line"><span>Лінія</span><span class="check" aria-hidden="true"></span></button>
-                    <button type="button" class="shape-option" data-shape="rectangle"><span>Прямокутник</span><span class="check" aria-hidden="true"></span></button>
-                    <button type="button" class="shape-option" data-shape="ellipse"><span>Еліпс</span><span class="check" aria-hidden="true"></span></button>
+                    <button type="button" class="shape-option" data-shape="point">Крапка</button>
+                    <button type="button" class="shape-option" data-shape="line">Лінія</button>
+                    <button type="button" class="shape-option" data-shape="rectangle">Прямокутник</button>
+                    <button type="button" class="shape-option" data-shape="ellipse">Еліпс</button>
                 </div>
             </div>
             <div class="menu-group">
@@ -34,6 +34,21 @@
             </div>
         </nav>
 
+        <div class="toolbar" role="toolbar" aria-label="Панель інструментів">
+            <button type="button" class="tool-button" data-shape="point" data-tooltip="Крапка" aria-label="Крапка">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>
+            </button>
+            <button type="button" class="tool-button" data-shape="line" data-tooltip="Лінія" aria-label="Лінія">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" stroke-width="2"/></svg>
+            </button>
+            <button type="button" class="tool-button" data-shape="rectangle" data-tooltip="Прямокутник" aria-label="Прямокутник">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </button>
+            <button type="button" class="tool-button" data-shape="ellipse" data-tooltip="Еліпс" aria-label="Еліпс">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="6" fill="#ffa500" stroke="currentColor" stroke-width="2"/></svg>
+            </button>
+        </div>
+
         <section class="canvas-panel" aria-label="Поле малювання">
             <canvas id="drawing-canvas" aria-label="Поле для малювання геометричних фігур"></canvas>
         </section>
@@ -41,9 +56,9 @@
 
     <dialog id="help-dialog" class="help-dialog">
         <h2>Як користуватися редактором</h2>
-        <p>Вибери фігуру в меню «Об’єкти». Позначка ✓ у меню показує активний тип.</p>
-        <p><b>Крапка:</b> один клік. <b>Лінія та прямокутник:</b> натисни й перетягни мишу. <b>Еліпс:</b> натисни у центрі й перетягни до кута охоплюючого прямокутника.</p>
-        <p>Під час руху миші видно суцільний чорний «гумовий» слід. Щоб прибрати всі фігури, вибери «Файл → Очистити поле».</p>
+        <p>Вибери фігуру в меню «Об’єкти» або кнопкою на панелі інструментів. Назва поточної фігури показується в заголовку вікна.</p>
+        <p><b>Крапка:</b> один клік. <b>Лінія:</b> натисни на початку й перетягни мишу до кінця. <b>Прямокутник:</b> натисни у центрі й перетягни до кута. <b>Еліпс:</b> натисни в одному куті охоплюючого прямокутника й перетягни до протилежного.</p>
+        <p>Під час руху миші видно суцільний червоний «гумовий» слід. Щоб прибрати всі фігури, вибери «Файл → Очистити поле».</p>
         <form method="dialog"><button type="submit">Зрозуміло</button></form>
     </dialog>
 </body>

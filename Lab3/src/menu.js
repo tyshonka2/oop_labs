@@ -48,7 +48,7 @@ export function setupMenu(editor) {
     document.getElementById("save-canvas").addEventListener("click", () => {
         const link = document.createElement("a");
         link.href = editor.toPNG();
-        link.download = "Lab2-malunok.png";
+        link.download = "Lab3-malunok.png";
         link.click();
         closeMenus();
     });
