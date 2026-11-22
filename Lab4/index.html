@@ -24,6 +24,8 @@
                     <button type="button" class="shape-option" data-shape="line">Лінія</button>
                     <button type="button" class="shape-option" data-shape="rectangle">Прямокутник</button>
                     <button type="button" class="shape-option" data-shape="ellipse">Еліпс</button>
+                    <button type="button" class="shape-option" data-shape="lineoo">Лінія з кружечками</button>
+                    <button type="button" class="shape-option" data-shape="cube">Куб</button>
                 </div>
             </div>
             <div class="menu-group">
@@ -47,6 +49,12 @@
             <button type="button" class="tool-button" data-shape="ellipse" data-tooltip="Еліпс" aria-label="Еліпс">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="6" fill="#ffa500" stroke="currentColor" stroke-width="2"/></svg>
             </button>
+            <button type="button" class="tool-button" data-shape="lineoo" data-tooltip="Лінія з кружечками" aria-label="Лінія з кружечками">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="18" x2="18" y2="6" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="3" fill="#ffa500" stroke="currentColor" stroke-width="1.5"/><circle cx="18" cy="6" r="3" fill="#ffa500" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+            <button type="button" class="tool-button" data-shape="cube" data-tooltip="Куб" aria-label="Куб">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="9" width="11" height="11"/><rect x="9" y="4" width="11" height="11"/><path d="M3 9 L9 4 M14 9 L20 4 M14 20 L20 15 M3 20 L9 15"/></g></svg>
+            </button>
         </div>
 
         <section class="canvas-panel" aria-label="Поле малювання">
@@ -57,7 +65,7 @@
     <dialog id="help-dialog" class="help-dialog">
         <h2>Як користуватися редактором</h2>
         <p>Вибери фігуру в меню «Об’єкти» або кнопкою на панелі інструментів. Назва поточної фігури показується в заголовку вікна.</p>
-        <p><b>Крапка:</b> один клік. <b>Лінія:</b> натисни на початку й перетягни мишу до кінця. <b>Прямокутник:</b> натисни у центрі й перетягни до кута. <b>Еліпс:</b> натисни в одному куті охоплюючого прямокутника й перетягни до протилежного.</p>
+        <p><b>Крапка:</b> один клік. <b>Лінія:</b> натисни на початку й перетягни мишу до кінця. <b>Прямокутник:</b> натисни у центрі й перетягни до кута. <b>Еліпс:</b> натисни в одному куті охоплюючого прямокутника й перетягни до протилежного. <b>Лінія з кружечками:</b> як звичайна лінія. <b>Куб:</b> як прямокутник, від центру передньої грані до її кута.</p>
         <p>Під час руху миші видно чорний пунктирний «гумовий» слід. Щоб прибрати всі фігури, вибери «Файл → Очистити поле».</p>
         <form method="dialog"><button type="submit">Зрозуміло</button></form>
     </dialog>

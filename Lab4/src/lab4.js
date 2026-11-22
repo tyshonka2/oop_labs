@@ -5,6 +5,8 @@ import { PointShape } from "./shapes/PointShape.js";
 import { LineShape } from "./shapes/LineShape.js";
 import { RectangleShape } from "./shapes/RectangleShape.js";
 import { EllipseShape } from "./shapes/EllipseShape.js";
+import { LineOOShape } from "./shapes/LineOOShape.js";
+import { CubeShape } from "./shapes/CubeShape.js";
 
 const TITLE = "Лабораторна робота №4";
 
@@ -12,7 +14,9 @@ const SHAPES = {
     point: { ShapeClass: PointShape, name: "Крапка" },
     line: { ShapeClass: LineShape, name: "Лінія" },
     rectangle: { ShapeClass: RectangleShape, name: "Прямокутник" },
-    ellipse: { ShapeClass: EllipseShape, name: "Еліпс" }
+    ellipse: { ShapeClass: EllipseShape, name: "Еліпс" },
+    lineoo: { ShapeClass: LineOOShape, name: "Лінія з кружечками" },
+    cube: { ShapeClass: CubeShape, name: "Куб" }
 };
 
 class MainWindow {
