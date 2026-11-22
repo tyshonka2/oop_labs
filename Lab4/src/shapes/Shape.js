@@ -4,6 +4,10 @@ export class Shape {
             throw new Error("Shape — абстрактний клас, його не можна створити напряму");
         }
 
+        this.set(x1, y1, x2, y2);
+    }
+
+    set(x1, y1, x2, y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -19,6 +23,10 @@ export class Shape {
         return this.x1 === this.x2 && this.y1 === this.y2;
     }
 
+    isOneClick() {
+        return false;
+    }
+
     path(ctx) {
         throw new Error("Метод path() потрібно перевизначити у класі-нащадку");
     }
@@ -29,8 +37,9 @@ export class Shape {
 
     showTrail(ctx) {
         ctx.save();
-        ctx.strokeStyle = "#ff0000";
+        ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
+        ctx.setLineDash([6, 4]);
         ctx.beginPath();
         this.path(ctx);
         ctx.stroke();

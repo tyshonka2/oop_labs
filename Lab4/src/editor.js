@@ -1,40 +1,37 @@
-import { PointShape } from "./shapes/PointShape.js";
-import { LineShape } from "./shapes/LineShape.js";
-import { RectangleShape } from "./shapes/RectangleShape.js";
-import { EllipseShape } from "./shapes/EllipseShape.js";
-
-const SHAPE_CLASSES = {
-    point: PointShape,
-    line: LineShape,
-    rectangle: RectangleShape,
-    ellipse: EllipseShape
-};
-
 const MAX_SHAPES = 129;
 
-export class GraphicEditor {
+export class MyEditor {
     #canvas;
     #ctx;
     #objects = new Array(MAX_SHAPES).fill(null);
     #count = 0;
-    #type = "point";
+    #ShapeClass = null;
     #current = null;
+    #handlers;
 
     constructor(canvas) {
         this.#canvas = canvas;
         this.#ctx = canvas.getContext("2d");
 
-        this.#resizeCanvas();
-        window.addEventListener("resize", () => this.#resizeCanvas());
+        this.#handlers = {
+            resize: () => this.#resizeCanvas(),
+            pointerdown: (event) => this.#onMouseDown(event),
+            pointermove: (event) => this.#onMouseMove(event),
+            pointerup: (event) => this.#onMouseUp(event),
+            pointercancel: () => this.#cancel()
+        };
 
-        canvas.addEventListener("pointerdown", (event) => this.#onMouseDown(event));
-        canvas.addEventListener("pointermove", (event) => this.#onMouseMove(event));
-        canvas.addEventListener("pointerup", (event) => this.#onMouseUp(event));
-        canvas.addEventListener("pointercancel", () => this.#cancel());
+        window.addEventListener("resize", this.#handlers.resize);
+        canvas.addEventListener("pointerdown", this.#handlers.pointerdown);
+        canvas.addEventListener("pointermove", this.#handlers.pointermove);
+        canvas.addEventListener("pointerup", this.#handlers.pointerup);
+        canvas.addEventListener("pointercancel", this.#handlers.pointercancel);
+
+        this.#resizeCanvas();
     }
 
-    setType(type) {
-        this.#type = type;
+    start(ShapeClass) {
+        this.#ShapeClass = ShapeClass;
         this.#cancel();
     }
 
@@ -46,6 +43,21 @@ export class GraphicEditor {
 
     toPNG() {
         return this.#canvas.toDataURL("image/png");
+    }
+
+    destroy() {
+        window.removeEventListener("resize", this.#handlers.resize);
+        this.#canvas.removeEventListener("pointerdown", this.#handlers.pointerdown);
+        this.#canvas.removeEventListener("pointermove", this.#handlers.pointermove);
+        this.#canvas.removeEventListener("pointerup", this.#handlers.pointerup);
+        this.#canvas.removeEventListener("pointercancel", this.#handlers.pointercancel);
+
+        this.#objects.fill(null);
+        this.#count = 0;
+        this.#current = null;
+        this.#ShapeClass = null;
+        this.#ctx = null;
+        this.#canvas = null;
     }
 
     #resizeCanvas() {
@@ -68,11 +80,6 @@ export class GraphicEditor {
         };
     }
 
-    #createShape(point) {
-        const ShapeClass = SHAPE_CLASSES[this.#type];
-        return new ShapeClass(point.x, point.y, point.x, point.y);
-    }
-
     #addShape(shape) {
         if (this.#count >= MAX_SHAPES) return;
 
@@ -81,17 +88,18 @@ export class GraphicEditor {
     }
 
     #onMouseDown(event) {
-        if (event.button !== 0 || this.#count >= MAX_SHAPES) return;
+        if (event.button !== 0 || !this.#ShapeClass || this.#count >= MAX_SHAPES) return;
 
         const point = this.#position(event);
+        const shape = new this.#ShapeClass(point.x, point.y, point.x, point.y);
 
-        if (this.#type === "point") {
-            this.#addShape(this.#createShape(point));
+        if (shape.isOneClick()) {
+            this.#addShape(shape);
             this.#render();
             return;
         }
 
-        this.#current = this.#createShape(point);
+        this.#current = shape;
         this.#canvas.setPointerCapture(event.pointerId);
     }
 
