@@ -1,15 +1,34 @@
 const MAX_SHAPES = 129;
 
 export class MyEditor {
+    static #instance = null;
+    static #creating = false;
+
     #canvas;
     #ctx;
     #objects = new Array(MAX_SHAPES).fill(null);
     #count = 0;
     #ShapeClass = null;
     #current = null;
+    #selected = -1;
+    #listeners = [];
     #handlers;
 
+    static getInstance(canvas) {
+        if (!MyEditor.#instance) {
+            MyEditor.#creating = true;
+            MyEditor.#instance = new MyEditor(canvas);
+            MyEditor.#creating = false;
+        }
+
+        return MyEditor.#instance;
+    }
+
     constructor(canvas) {
+        if (!MyEditor.#creating) {
+            throw new Error("MyEditor — Singleton, використовуйте MyEditor.getInstance()");
+        }
+
         this.#canvas = canvas;
         this.#ctx = canvas.getContext("2d");
 
@@ -30,15 +49,57 @@ export class MyEditor {
         this.#resizeCanvas();
     }
 
+    get selected() {
+        return this.#selected;
+    }
+
+    addListener(listener) {
+        this.#listeners.push(listener);
+    }
+
     start(ShapeClass) {
         this.#ShapeClass = ShapeClass;
         this.#cancel();
     }
 
+    getShapes() {
+        return this.#objects.slice(0, this.#count);
+    }
+
+    select(index) {
+        this.#selected = index;
+        this.#render();
+    }
+
+    remove(index) {
+        if (index < 0 || index >= this.#count) return;
+
+        this.#objects.copyWithin(index, index + 1, this.#count);
+        this.#count--;
+        this.#objects[this.#count] = null;
+
+        if (this.#selected === index) this.#selected = -1;
+        else if (this.#selected > index) this.#selected--;
+
+        this.#changed();
+    }
+
+    load(shapes) {
+        this.#objects.fill(null);
+        this.#count = 0;
+        this.#selected = -1;
+        this.#current = null;
+
+        shapes.forEach((shape) => this.#addShape(shape));
+        this.#changed();
+    }
+
     clear() {
         this.#objects.fill(null);
         this.#count = 0;
-        this.#cancel();
+        this.#selected = -1;
+        this.#current = null;
+        this.#changed();
     }
 
     toPNG() {
@@ -56,8 +117,11 @@ export class MyEditor {
         this.#count = 0;
         this.#current = null;
         this.#ShapeClass = null;
+        this.#listeners = [];
         this.#ctx = null;
         this.#canvas = null;
+
+        MyEditor.#instance = null;
     }
 
     #resizeCanvas() {
@@ -87,6 +151,11 @@ export class MyEditor {
         this.#count++;
     }
 
+    #changed() {
+        this.#render();
+        this.#listeners.forEach((listener) => listener());
+    }
+
     #onMouseDown(event) {
         if (event.button !== 0 || !this.#ShapeClass || this.#count >= MAX_SHAPES) return;
 
@@ -95,7 +164,7 @@ export class MyEditor {
 
         if (shape.isOneClick()) {
             this.#addShape(shape);
-            this.#render();
+            this.#changed();
             return;
         }
 
@@ -117,12 +186,16 @@ export class MyEditor {
         const point = this.#position(event);
         this.#current.setEnd(point.x, point.y);
 
-        if (!this.#current.isEmpty()) {
-            this.#addShape(this.#current);
+        const shape = this.#current;
+        this.#current = null;
+
+        if (shape.isEmpty()) {
+            this.#render();
+            return;
         }
 
-        this.#current = null;
-        this.#render();
+        this.#addShape(shape);
+        this.#changed();
     }
 
     #cancel() {
@@ -135,6 +208,16 @@ export class MyEditor {
 
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, this.#canvas.clientWidth, this.#canvas.clientHeight);
+
+        if (this.#selected >= 0) {
+            ctx.save();
+            ctx.strokeStyle = "rgba(37, 99, 235, 0.55)";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            this.#objects[this.#selected].path(ctx);
+            ctx.stroke();
+            ctx.restore();
+        }
 
         for (let i = 0; i < this.#count; i++) {
             this.#objects[i].show(ctx);

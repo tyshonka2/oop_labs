@@ -149,3 +149,70 @@ button:focus-visible, canvas:focus-visible { outline: 3px solid #f5b348; outline
     .menu-bar { padding: 0 4px; }
     .menu-trigger { padding: 14px 13px; }
 }
+
+.menu-separator {
+    margin: 4px 6px;
+    border: none;
+    border-top: 1px solid #dbe3f0;
+}
+
+.menu-check.checked::after { content: " ✓"; font-weight: 700; color: #315cd2; }
+
+.table-window {
+    position: fixed;
+    top: 120px;
+    left: auto;
+    right: 24px;
+    margin: 0;
+    padding: 0;
+    width: 420px;
+    border: 1px solid #b7c5db;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 12px 40px rgba(23, 47, 90, .25);
+    overflow: hidden;
+    z-index: 5;
+}
+
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 8px 14px;
+    background: #243452;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
+}
+
+.table-close {
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 6px;
+}
+
+.table-scroll { max-height: 300px; overflow-y: auto; }
+
+.table-window table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-window th, .table-window td { padding: 6px 10px; border-bottom: 1px solid #e3e9f3; text-align: right; }
+.table-window th:first-child, .table-window td:first-child { text-align: left; }
+.table-window thead th { position: sticky; top: 0; background: #eef2f9; }
+.table-window tbody tr { cursor: pointer; }
+.table-window tbody tr:hover { background: #f3f7ff; }
+.table-window tbody tr.selected { background: #dce8ff; }
+
+.table-footer { padding: 8px 10px; border-top: 1px solid #e3e9f3; text-align: right; }
+.table-delete {
+    padding: 7px 14px;
+    border: 1px solid #d5dfef;
+    border-radius: 8px;
+    background: #eef2f9;
+    color: #243452;
+    font-weight: 700;
+}
+.table-delete:disabled { opacity: .5; cursor: default; }

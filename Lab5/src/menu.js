@@ -15,11 +15,20 @@ export class Menu {
         });
 
         document.getElementById("clear-canvas").addEventListener("click", () => this.#onClearClick());
+        document.getElementById("open-csv").addEventListener("click", () => this.#onOpenCSVClick());
+        document.getElementById("save-csv").addEventListener("click", () => this.#onSaveCSVClick());
         document.getElementById("save-canvas").addEventListener("click", () => this.#onSaveClick());
+        document.getElementById("toggle-table").addEventListener("click", () => this.#onTableClick());
         document.getElementById("show-help").addEventListener("click", () => this.#onHelpClick());
 
         document.addEventListener("pointerdown", (event) => this.#onDocumentPointerDown(event));
         document.addEventListener("keydown", (event) => this.#onKeyDown(event));
+    }
+
+    setTableChecked(checked) {
+        const item = document.getElementById("toggle-table");
+        item.classList.toggle("checked", checked);
+        item.setAttribute("aria-checked", String(checked));
     }
 
     close() {
@@ -46,6 +55,21 @@ export class Menu {
 
     #onClearClick() {
         this.#window.clear();
+        this.close();
+    }
+
+    #onOpenCSVClick() {
+        this.close();
+        this.#window.openCSV();
+    }
+
+    #onSaveCSVClick() {
+        this.#window.saveCSV();
+        this.close();
+    }
+
+    #onTableClick() {
+        this.#window.toggleTable();
         this.close();
     }
 
