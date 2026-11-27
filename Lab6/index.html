@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab6 — менеджер</title>
+    <link rel="stylesheet" href="./src/style/style.css">
+    <script type="module" src="./src/lab6.js"></script>
+</head>
+<body>
+    <main class="application">
+        <nav class="menu-bar" aria-label="Головне меню">
+            <div class="menu-group">
+                <button class="menu-trigger" id="task-menu-button" type="button" aria-expanded="false" aria-controls="task-menu">Завдання</button>
+                <div class="dropdown" id="task-menu" hidden>
+                    <button type="button" id="run-task">Побудувати графік…</button>
+                    <button type="button" id="close-programs">Закрити Object2 та Object3</button>
+                </div>
+            </div>
+            <div class="menu-group">
+                <button class="menu-trigger" id="help-menu-button" type="button" aria-expanded="false" aria-controls="help-menu">Довідка</button>
+                <div class="dropdown" id="help-menu" hidden>
+                    <button type="button" id="show-help">Як працює програма?</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="content">
+            <h1>Lab6 — менеджер програм Object2 та Object3</h1>
+            <p>Програма Lab6 сама запускає програми Object2 та Object3 і обмінюється з ними повідомленнями. Object2 генерує точки й записує їх у буфер обміну, Object3 читає точки з буфера обміну й будує графік.</p>
+
+            <div class="log-panel">
+                <h2>Журнал повідомлень</h2>
+                <ol class="log" id="log"></ol>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="params-dialog" class="params-dialog">
+        <form id="params-form" novalidate>
+            <h2>Параметри завдання</h2>
+            <div class="params-grid">
+                <label class="wide">Кількість точок nPoint<input type="number" name="nPoint" value="20" step="1"></label>
+                <label>xMin<input type="number" name="xMin" value="-50" step="1"></label>
+                <label>xMax<input type="number" name="xMax" value="50" step="1"></label>
+                <label>yMin<input type="number" name="yMin" value="-20" step="1"></label>
+                <label>yMax<input type="number" name="yMax" value="40" step="1"></label>
+            </div>
+            <p class="params-error" id="params-error"></p>
+            <div class="dialog-actions">
+                <button type="submit" class="primary">Виконати</button>
+                <button type="button" id="params-cancel">Відміна</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="help-dialog" class="help-dialog">
+        <h2>Як працює програма</h2>
+        <p>Вибери «Завдання → Побудувати графік…», введи параметри й натисни «Виконати». Далі Lab6 сама відкриє вікна Object2 та Object3, розташує їх поруч і передасть їм повідомлення.</p>
+        <p>Object2 створює nPoint пар цілих чисел (x, y), показує їх і записує в буфер обміну. Object3 читає дані з буфера обміну й будує графік y = f(x).</p>
+        <p>Якщо браузер заблокував спливаючі вікна або питає дозвіл на буфер обміну, дозволь це один раз для цього сайту. Коли закриваєш Lab6, вікна Object2 та Object3 закриваються автоматично.</p>
+        <form method="dialog"><button type="submit">Зрозуміло</button></form>
+    </dialog>
+</body>
+</html>

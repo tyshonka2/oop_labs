@@ -1,0 +1,28 @@
+:root {
+    font-family: Arial, sans-serif;
+    color: #243452;
+    background: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body { display: flex; flex-direction: column; }
+
+.title {
+    flex: none;
+    padding: 12px 18px;
+    background: #edf3ff;
+    border-bottom: 1px solid #c9d8eb;
+    font-weight: 700;
+}
+
+.status { flex: none; margin: 10px 18px 0; color: #5a6780; }
+
+#graph {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: block;
+}

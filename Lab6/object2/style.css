@@ -1,0 +1,37 @@
+:root {
+    font-family: Arial, sans-serif;
+    color: #243452;
+    background: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+.title {
+    position: sticky;
+    top: 0;
+    padding: 12px 18px;
+    background: #edf3ff;
+    border-bottom: 1px solid #c9d8eb;
+    font-weight: 700;
+}
+
+.content { padding: 14px 18px; }
+
+.status { margin: 0 0 12px; color: #5a6780; }
+
+.points {
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.points th, .points td {
+    min-width: 64px;
+    padding: 4px 12px;
+    border-bottom: 1px solid #e3e9f3;
+    text-align: right;
+}
+
+.points th { background: #eef2f9; }
+.points td:first-child { color: #8a96ab; }
