@@ -1,25 +1,25 @@
-import { Shape } from "./Shape.js";
+export class Toolbar {
+    #window;
+    #buttons;
 
-export class EllipseShape extends Shape {
-    path(ctx) {
-        ctx.ellipse(
-            (this.x1 + this.x2) / 2,
-            (this.y1 + this.y2) / 2,
-            Math.abs(this.x2 - this.x1) / 2,
-            Math.abs(this.y2 - this.y1) / 2,
-            0, 0, Math.PI * 2
-        );
+    constructor(mainWindow) {
+        this.#window = mainWindow;
+        this.#buttons = document.querySelectorAll(".tool-button");
+
+        this.#buttons.forEach((button) => {
+            button.addEventListener("click", () => this.#onButtonClick(button));
+        });
     }
 
-    show(ctx) {
-        ctx.save();
-        ctx.beginPath();
-        this.path(ctx);
-        ctx.fillStyle = "#ffa500";
-        ctx.fill();
-        ctx.strokeStyle = "#000000";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.restore();
+    select(type) {
+        this.#buttons.forEach((button) => {
+            const active = button.dataset.shape === type;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-pressed", String(active));
+        });
+    }
+
+    #onButtonClick(button) {
+        this.#window.setType(button.dataset.shape);
     }
 }
